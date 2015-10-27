@@ -1,4 +1,4 @@
-# MSSQL2Oracle-Migration ![AppVayour status](https://ci.appveyor.com/api/projects/status/60wftquacksfgng6/branch/master?svg=true)
+# MSSQL2Oracle ![AppVayour status](https://ci.appveyor.com/api/projects/status/60wftquacksfgng6/branch/master?svg=true)
 
 
 MSSQL2Oracle is a small migration tool to help you migrate to Oracle database. It extracts basic database structure and all of the data from source SQL Server database.  All the data is written to files, one file for table structure and one file per table. 
