@@ -49,6 +49,7 @@ namespace MSSLQ2Oracle
                     {
                         case SqlDataType.BigInt:
                         case SqlDataType.Int:
+                        case SqlDataType.SmallInt:
                             sqlType = "NUMBER(12)";
                             break;
                         case SqlDataType.DateTime2:
@@ -95,7 +96,7 @@ namespace MSSLQ2Oracle
         {
             var tables = this.GetTables(sourceDb);
             var sql = CreateTableStatements(tables);
-            Helpers.WriteStatementsToFile(sql, path);
+            Helpers.WriteStatementsToFile(sql, path, "CreateStatements.sql");
         }
 
     }

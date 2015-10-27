@@ -22,6 +22,9 @@ namespace MSSLQ2Oracle
               HelpText = "Directory path for extracted data is required")]
             public string Path { get; set; }
 
+            [Option('t', "tables", Required = false,
+              HelpText = "You can specify filter for tables and delimit them with semicolon")]
+            public string Tables { get; set; }
 
             [ParserState]
             public IParserState LastParserState { get; set; }
@@ -53,6 +56,8 @@ namespace MSSLQ2Oracle
                 myServer.ConnectionContext.LoginSecure = true;
                 myServer.ConnectionContext.Connect();
                 var tableStructureExtractor = new TableStructureExtractor();
+                var dataExtractor = new DataExtractor(options.SourceConnectionString);
+
 
                 Database sourceDatabase = null;
 
@@ -70,6 +75,7 @@ namespace MSSLQ2Oracle
                 }
 
                 tableStructureExtractor.CreateFileWithCreateStatements(sourceDatabase, options.Path);
+                dataExtractor.CreateDBInserts(options.SourceConnectionString, sourceDatabase, options.Path);
             }
         }
     }

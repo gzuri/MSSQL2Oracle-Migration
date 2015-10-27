@@ -21,12 +21,12 @@ namespace MSSLQ2Oracle
             }));
         }
 
-        public static void WriteStatementsToFile(List<string> lines, string path)
+        public static void WriteStatementsToFile(List<string> lines, string path, string fileName)
         {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
-            var filePath = Path.Combine(path, "CreateStatements.sql");
+            var filePath = Path.Combine(path, fileName);
 
             if (File.Exists(filePath))
                 File.Delete(filePath);
