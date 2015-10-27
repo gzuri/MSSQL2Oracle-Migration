@@ -7,7 +7,7 @@ MSSQL2Oracle is a small migration tool to help you migrate to Oracle database. I
  - Translate all camel case table and column names to upper and underscore delimiter
  - Create a file with SQL create statements (FK, indexes not supported for now)
  - Create files with SQL INSERT statements from the SQL Server source database
-https://gzuri.blob.core.windows.net/public/MSSQL2Oracle.zip
+
 
 ## Usage
 The easiest way is to download compiled zip version from the [url](https://gzuri.blob.core.windows.net/public/MSSQL2Oracle.zip "url"), or download the latest version of the source and compile it yourself.
