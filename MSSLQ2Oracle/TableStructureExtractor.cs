@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MSSLQ2Oracle.DTOs;
 using Microsoft.SqlServer.Management.Smo;
+using System.Data;
 
 namespace MSSLQ2Oracle
 {
@@ -17,9 +18,14 @@ namespace MSSLQ2Oracle
             foreach (var table in tables)
             {
                 var createLine = "CREATE TABLE " + table.Name + " ( ";
+                var columnIndex = 0;
                 foreach (var column in table.Columns)
                 {
-                    createLine += column.Name + " " + column.Type + " ,  ";
+                    createLine += column.Name + " " + column.Type;
+                    if (!column.IsNullable && columnIndex != 0)
+                        createLine += "NOT NULL";
+                    ++columnIndex;
+                    createLine += ", ";
                 }
 
                 createLine += String.Format("PRIMARY KEY ({0}) );", table.PrimaryKey);
@@ -44,6 +50,8 @@ namespace MSSLQ2Oracle
 
                 foreach (Microsoft.SqlServer.Management.Smo.Column dbColumn in dbTable.Columns)
                 {
+                    DataTable tb = dbColumn.EnumForeignKeys();
+
                     var sqlType = String.Empty;
                     switch (dbColumn.DataType.SqlDataType)
                     {
