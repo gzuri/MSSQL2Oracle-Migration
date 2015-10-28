@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Globalization;
 using System.Diagnostics;
@@ -14,6 +11,7 @@ namespace MSSLQ2Oracle
     public class DataExtractor
     {
         string mConnectionString;
+        Dictionary<string, string> convertedNames = new Dictionary<string, string>();
 
         public DataExtractor(string connectionString)
         {
@@ -54,8 +52,6 @@ namespace MSSLQ2Oracle
                     }
                     break;
 
-
-
                 case SqlDataType.Decimal:
                     decimal decimalNumber = reader.GetDecimal(columnIndex);
                     sqlBuiltString += decimalNumber.ToString(CultureInfo.InvariantCulture);
@@ -66,18 +62,22 @@ namespace MSSLQ2Oracle
                     var date = reader.GetDateTime(columnIndex);
                     sqlBuiltString += String.Format("TO_DATE('{0}', 'yyyy-mm-dd hh24:mi:ss')", date.ToString("yy-MM-dd HH:mm:ss"));
                     break;
+
                 case SqlDataType.Bit:
                     var bitData = reader.GetBoolean(columnIndex);
                     sqlBuiltString += bitData == true ? "1" : "0";
                     break;
+
                 case SqlDataType.NVarChar:
                 case SqlDataType.NVarCharMax:
                 case SqlDataType.VarChar:
                     sqlBuiltString += "'" + reader.GetString(columnIndex) + "'";
                     break;
+
                 case SqlDataType.UniqueIdentifier:
                     sqlBuiltString += "'" + reader.GetGuid(columnIndex).ToString() + "'";
                     break;
+
                 case SqlDataType.VarBinary:
                 case SqlDataType.VarBinaryMax:
                     sqlBuiltString += "NULL";
@@ -94,6 +94,12 @@ namespace MSSLQ2Oracle
 
             for (var i = 0; i < table.Columns.Count; i++)
             {
+                var name = table.Columns[i].Name;
+                if (!convertedNames.ContainsKey(name))
+                    convertedNames.Add(name, Helpers.ConvertNaming(name));
+
+                name = convertedNames[name];
+
                 columnNames += String.Format(" {0},", Helpers.ConvertNaming(table.Columns[i].Name));
                 columnValues = SqlReadyValue(columnValues, table.Columns[i], i, reader);
             }
@@ -110,6 +116,7 @@ namespace MSSLQ2Oracle
             using (var conn = new SqlConnection(mConnectionString))
             {
                 conn.Open();
+                var i = 0;
                 var command = new SqlCommand(String.Format("SELECT * FROM {0}", table.Name), conn);
                 SqlDataReader reader = command.ExecuteReader();
                 if (reader.HasRows)
@@ -133,7 +140,9 @@ namespace MSSLQ2Oracle
 
             using (StreamWriter sw = File.CreateText(filePath))
             {
+                sw.WriteLine("SET DEFINE OFF");
                 ExtractDataForTable(table, sw);
+                sw.WriteLine("SET DEFINE ON");
             }
         }
 
