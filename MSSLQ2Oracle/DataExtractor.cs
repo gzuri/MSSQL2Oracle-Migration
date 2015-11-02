@@ -60,7 +60,7 @@ namespace MSSLQ2Oracle
                 case SqlDataType.DateTime2:
                 case SqlDataType.DateTime:
                     var date = reader.GetDateTime(columnIndex);
-                    sqlBuiltString += String.Format("TO_DATE('{0}', 'yyyy-mm-dd hh24:mi:ss')", date.ToString("yy-MM-dd HH:mm:ss"));
+                    sqlBuiltString += String.Format("TO_DATE('{0}', 'yyyy-mm-dd hh24:mi:ss')", date.ToString("yyyy-MM-dd HH:mm:ss"));
                     break;
 
                 case SqlDataType.Bit:

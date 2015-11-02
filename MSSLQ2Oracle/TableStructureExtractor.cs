@@ -23,7 +23,7 @@ namespace MSSLQ2Oracle
                 {
                     createLine += column.Name + " " + column.Type;
                     if (!column.IsNullable && columnIndex != 0)
-                        createLine += "NOT NULL";
+                        createLine += " NOT NULL";
                     ++columnIndex;
                     createLine += ", ";
                 }
@@ -64,11 +64,16 @@ namespace MSSLQ2Oracle
                         case SqlDataType.DateTime:
                             sqlType = "DATE";
                             break;
-                        case SqlDataType.NVarChar:
                         case SqlDataType.NVarCharMax:
+                        case SqlDataType.VarCharMax:
+                            sqlType = "varchar2(4000)";
+                            break;
+                        case SqlDataType.NVarChar:
                         case SqlDataType.VarChar:
-                        case SqlDataType.UniqueIdentifier:
                             sqlType = "varchar2(255)";
+                            break;
+                        case SqlDataType.UniqueIdentifier:
+                            sqlType = "CHAR(36)";
                             break;
                         case SqlDataType.Float:
                             sqlType = "NUMBER(12,5)";
